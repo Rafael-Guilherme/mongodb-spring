@@ -1,6 +1,7 @@
 package com.rafaelguilherme.mongodb_spring_boot.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,26 @@ public class UserService {
 		userRepo.deleteById(id);
 	}
 	
+	public User update(User obj) {
+		Optional<User> optionalUser = userRepo.findById(obj.getId());
+
+	    if (!optionalUser.isPresent()) {
+	        throw new ObjectNotFoundException("Objeto não encontrado");
+	    }
+
+	    User existingUser = optionalUser.get();
+
+	    updadteData(existingUser, obj);
+
+	    return userRepo.save(existingUser);
+	}
+	
+	private void updadteData(User newObj, User obj) {
+		newObj.setName(obj.getName());
+		newObj.setEmail(obj.getEmail());
+		
+	}
+
 	public User fromDTO(UserDTO objDto) {
 		return new User(objDto.getId(), objDto.getName(), objDto.getEmail());
 	}
